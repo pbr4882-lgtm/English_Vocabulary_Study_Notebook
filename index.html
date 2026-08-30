@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>나만의 낱말카드</title>
+<style>
+:root {
+  --paper: #f7f3ea;
+  --card: #fffdf8;
+  --ink: #18232b;
+  --muted: #778189;
+  --line: #dfd8cc;
+  --blue: #2457d6;
+  --blue-dark: #173fa7;
+  --coral: #e47e69;
+  --green: #6e9d79;
+  --shadow: 7px 7px 0 #ded7ca;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, 'Malgun Gothic', sans-serif;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  max-width: 1100px;
+  margin: auto;
+  padding: 28px 22px 55px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 19px;
+}
+
+.mark {
+  width: 28px;
+  height: 28px;
+  background: var(--blue);
+  border-radius: 7px 7px 7px 2px;
+  transform: rotate(-7deg);
+  box-shadow: 4px 4px 0 #e9b455;
+  position: relative;
+}
+
+.mark:after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--paper);
+  right: 5px;
+  top: 5px;
+}
+
+.local {
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: #607069;
+  border: 1px dashed #c9c0b1;
+  border-radius: 7px;
+  padding: 8px 10px;
+  background: #fbf8f0;
+}
+
+.local b {
+  color: #72a076;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: center;
+  padding: 75px 0 50px;
+}
+
+.eyebrow, .label {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .14em;
+  color: #92958e;
+}
+
+.hero h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -.07em;
+  margin: 18px 0;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.hero p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 62px;
+}
+
+.action {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 11px;
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  box-shadow: var(--shadow);
+  transition: .18s;
+}
+
+.action:hover {
+  transform: translateY(-3px);
+}
+
+.action.primary {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+
+.action .icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: #e9e3d8;
+  color: var(--blue);
+}
+
+.primary .icon {
+  background: #4a76df;
+  color: white;
+}
+
+.action span {
+  display: grid;
+  gap: 4px;
+}
+
+.action strong {
+  font-size: 14px;
+}
+
+.action small {
+  font-size: 10px;
+  opacity: .75;
+}
+
+.section {
+  margin: 42px 0;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 18px;
+}
+
+.section h2 {
+  font-family: Georgia, serif;
+  font-size: 27px;
+  letter-spacing: -.05em;
+  margin: 8px 0 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  min-height: 130px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat:after {
+  content: '';
+  position: absolute;
+  right: -25px;
+  bottom: -35px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .3;
+}
+
+.stat.blue { color: var(--blue); }
+.stat.coral { color: var(--coral); }
+.stat.green { color: var(--green); }
+
+.stat b {
+  display: block;
+  color: #8f9691;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.stat strong {
+  color: var(--ink);
+  font: 600 38px Georgia, serif;
+  display: inline-block;
+  margin-top: 16px;
+}
+
+.stat span {
+  color: #8c938e;
+  font-size: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  border: 0;
+  background: none;
+  padding: 12px 15px;
+  color: #8a928d;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 3px solid transparent;
+}
+
+.tab.active {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px;
+}
+
+.deck {
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
+  border-radius: 11px;
+  background: var(--card);
+  padding: 17px;
+  text-align: left;
+  min-height: 145px;
+  position: relative;
+}
+
+.deck:nth-child(3n+2) { border-top-color: var(--coral); }
+.deck:nth-child(3n) { border-top-color: var(--green); }
+
+.deck h3 {
+  font: 600 20px Georgia, serif;
+  margin: 28px 0 6px;
+}
+
+.deck p {
+  color: #919993;
+  font-size: 11px;
+  margin: 0;
+}
+
+.deck button {
+  border: 0;
+  background: none;
+  color: #9a9f99;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+}
+
+.deck .count {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: #aaa79d;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.editor {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+}
+
+.deck-list {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+.deck-choice {
+  border: 1px solid transparent;
+  background: none;
+  text-align: left;
+  padding: 13px;
+  border-radius: 8px;
+}
+
+.deck-choice.active, .deck-choice:hover {
+  background: var(--card);
+  border-color: var(--line);
+}
+
+.deck-choice b {
+  display: block;
+  font-size: 12px;
+}
+
+.deck-choice small {
+  color: #999;
+  font-size: 10px;
+}
+
+.editor-main {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.editor-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 17px;
+}
+
+.editor-title h2 {
+  font: 600 27px Georgia, serif;
+  margin: 8px 0;
+}
+
+.add-form {
+  display: grid;
+  grid-template-columns: 1fr 22px 1fr 40px;
+  gap: 8px;
+  align-items: center;
+  padding: 18px 0;
+}
+
+.add-form input, .test-form input {
+  border: 1px solid var(--line);
+  background: #f9f6ef;
+  border-radius: 7px;
+  padding: 11px;
+  font-size: 12px;
+}
+
+.add-form button, .test-form button, .new-btn {
+  background: var(--blue);
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+  padding: 11px;
+  font-weight: bold;
+}
+
+.cards-list {
+  border-top: 1px solid var(--line);
+}
+
+.card-item {
+  display: grid;
+  grid-template-columns: 30px 1fr 25px 1fr 25px;
+  gap: 7px;
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 1px solid #eee8de;
+  font-size: 12px;
+}
+
+.card-item .num {
+  color: #aaa;
+  font-size: 10px;
+}
+
+.card-item button {
+  border: 0;
+  background: none;
+  color: #aaa;
+}
+
+.study {
+  text-align: center;
+  padding: 42px 0;
+}
+
+.progress {
+  height: 4px;
+  background: #e6e0d5;
+  margin: 18px auto 45px;
+  max-width: 580px;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  transition: .25s;
+}
+
+.flashcard {
+  margin: auto;
+  width: min(590px, 100%);
+  aspect-ratio: 1.65;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: .35s;
+}
+
+.flashcard.flipped .inner {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 12px 36px 12px 36px;
+  display: grid;
+  place-items: center;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
+
+.front {
+  background: var(--blue);
+  color: white;
+}
+
+.back {
+  background: var(--card);
+  transform: rotateY(180deg);
+}
+
+.face b {
+  position: absolute;
+  left: 27px;
+  top: 22px;
+  font-size: 9px;
+  letter-spacing: .14em;
+  opacity: .7;
+}
+
+.face strong {
+  font: 600 clamp(35px, 6vw, 60px) Georgia, serif;
+}
+
+.face small {
+  position: absolute;
+  bottom: 22px;
+  opacity: .65;
+  font-size: 11px;
+}
+
+.study-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.memory {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 17px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.memory.no {
+  background: #faeee9;
+  color: #b36e5b;
+}
+
+.memory.yes {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+
+.test-box {
+  max-width: 680px;
+  margin: 50px auto;
+}
+
+.test-box h2 {
+  font: 600 clamp(35px, 6vw, 60px) Georgia, serif;
+  line-height: 1.08;
+  letter-spacing: -.06em;
+}
+
+.test-box h2 em {
+  font-style: normal;
+  color: var(--blue);
+}
+
+.meaning {
+  background: var(--card);
+  border-left: 4px solid #e9b455;
+  padding: 22px;
+  margin: 25px 0;
+  font: 24px Georgia, serif;
+}
+
+.test-form {
+  display: flex;
+  gap: 9px;
+}
+
+.test-form input {
+  flex: 1;
+  font-size: 14px;
+}
+
+.result {
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.result h2 {
+  font: 600 48px Georgia, serif;
+  margin: 18px;
+}
+
+.result p {
+  color: var(--muted);
+}
+
+.empty {
+  padding: 35px;
+  text-align: center;
+  color: #9a9f99;
+  font-size: 13px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  color: #aaa79f;
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+@media(max-width: 720px) {
+  .app { padding: 20px 16px 40px; }
+  .hero { grid-template-columns: 1fr; padding: 55px 0 35px; gap: 28px; }
+  .hero h1 { font-size: 44px; }
+  .actions, .stats, .deck-grid { grid-template-columns: 1fr; }
+  .editor { grid-template-columns: 1fr; }
+  .deck-list { grid-template-columns: 1fr 1fr; }
+  .add-form { grid-template-columns: 1fr 34px; }
+  .add-form input:nth-child(3) { grid-column: 1; }
+  .add-form button { grid-column: 2; grid-row: 1/3; height: 78px; }
+  .card-item { grid-template-columns: 24px 1fr 18px 1fr 18px; font-size: 11px; }
+  .top .local { font-size: 9px; }
+  .footer { display: grid; gap: 8px; }
+  .test-box { margin-top: 40px; }
+  .test-form { display: grid; }
+  .test-form button { width: 100%; }
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    
+    <!-- 상단 헤더 영역 -->
+    <header class="top">
+      <div class="brand">
+        <div class="mark"></div>
+        나만의 낱말카드
+      </div>
+      <div class="local">
+        <b>●</b> LOCAL ONLY · 이 브라우저에만 저장
+      </div>
+    </header>
+
+    <!-- 히어로(메인 소개) 섹션 -->
+    <section class="hero">
+      <div>
+        <div class="eyebrow">PERSONAL WORKBOOK / NO SERVER</div>
+        <h1>오늘 외울 영어<br><em>단어 및 문장을</em><br>만들어보세요.</h1>
+        <p>로그인 없이 시작하고, 내 브라우저에만 저장되는<br>가벼운 낱말카드 학습장입니다.</p>
+      </div>
+    </section>
+
+    <!-- 빠른 실행 버튼 영역 -->
+    <div class="actions">
+      <button class="action primary" onclick="show('study')">
+        <div class="icon">▣</div>
+        <span><strong>단어장</strong><small>카드를 넘기며 기억하기</small></span>
+        →
+      </button>
+      <button class="action" onclick="show('test')">
+        <div class="icon">✓</div>
+        <span><strong>학습하기</strong><small>내가 기억하는지 확인하기</small></span>
+        →
+      </button>
+    </div>
+
+    <!-- 진행 상황 및 통계 섹션 -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="label">01 / YOUR PROGRESS</div>
+          <h2>이번 주의 작은 기록</h2>
+        </div>
+        <div id="streak">🔥 0 day streak</div>
+      </div>
+      <div class="stats">
+        <div class="stat blue">
+          <b>전체 카드</b>
+          <strong id="totalCards">0</strong>
+          <span> 장 · 저장된 단어</span>
+        </div>
+        <div class="stat coral">
+          <b>단어장</b>
+          <strong id="totalDecks">0</strong>
+          <span> 개 · 나만의 주제</span>
+        </div>
+        <div class="stat green">
+          <b>오늘의 목표</b>
+          <strong id="todayGoal">0</strong>
+          <span> / 20 · 카드 보기</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 탭 네비게이션 (오답노트 탭 추가) -->
+    <div class="tabs">
+      <button class="tab active" data-screen="home" onclick="show('home')">최근 단어장</button>
+      <button class="tab" data-screen="decks" onclick="show('decks')">단어장 만들기</button>
+      <button class="tab" data-screen="study" onclick="show('study')">단어장</button>
+      <button class="tab" data-screen="test" onclick="show('test')">학습하기</button>
+      <button class="tab" data-screen="wrong" onclick="show('wrong')">오답노트</button>
+    </div>
+
+    <!-- 1. 홈 화면 (최근 단어장) -->
+    <section id="home" class="screen active">
+      <div class="section-head">
+        <div>
+          <div class="label">02 / YOUR DECKS</div>
+          <h2>최근 단어장</h2>
+        </div>
+        <button class="new-btn" onclick="addDeck()">＋ 새 단어장</button>
+      </div>
+      <div id="homeDecks" class="deck-grid"></div>
+    </section>
+
+    <!-- 2. 단어장 만들기 (에디터) 화면 -->
+    <section id="decks" class="screen">
+      <div class="section-head">
+        <div>
+          <div class="label">YOUR COLLECTION</div>
+          <h2>단어장 만들기</h2>
+        </div>
+        <button class="new-btn" onclick="addDeck()">＋ 새 단어장</button>
+      </div>
+      <div class="editor">
+        <div id="deckList" class="deck-list"></div>
+        <div class="editor-main">
+          <div class="editor-title">
+            <div>
+              <div class="label">EDITING DECK</div>
+              <h2 id="editorName"></h2>
+            </div>
+            <button class="memory no" onclick="deleteDeck()">단어장 삭제</button>
+          </div>
+          <div class="add-form">
+            <input id="term" placeholder="단어 (예: serendipity)">
+            <span>→</span>
+            <input id="meaningInput" placeholder="뜻 (예: 우연한 행운)">
+            <button onclick="addCard()">＋</button>
+          </div>
+          <div id="cardsList" class="cards-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 단어장 화면 -->
+    <section id="study" class="screen study">
+      <div class="label">03 / STUDY SESSION</div>
+      <h2 id="studyTitle" style="font:600 30px Georgia,serif;margin:10px 0"></h2>
+      <div class="progress"><i id="studyProgress"></i></div>
+      <div id="studyArea"></div>
+    </section>
+
+    <!-- 4. 학습하기 화면 -->
+    <section id="test" class="screen">
+      <div id="testArea"></div>
+    </section>
+
+    <!-- 5. 오답노트 화면 섹션 추가 -->
+    <section id="wrong" class="screen">
+      <div class="section-head">
+        <div>
+          <div class="label">MISTAKE NOTEBOOK</div>
+          <h2>오답 노트</h2>
+        </div>
+        <button class="memory no" onclick="clearWrongNotes()">오답노트 모두 비우기</button>
+      </div>
+      <div id="wrongArea"></div>
+    </section>
+
+    <!-- 푸터 영역 -->
+    <div class="footer">
+      <span>POCKET RECALL / PERSONAL EDITION</span>
+      <span>서버로 전송되지 않습니다.</span>
+    </div>
+
+  </div>
+
+<script>
+const KEY = 'simple-vocab-v1';
+const WRONG_KEY = 'simple-vocab-wrong-v1'; // [추가] 오답노트 전용 저장 키
+
+let data = JSON.parse(localStorage.getItem(KEY) || 'null') || {
+  decks: [
+    {
+      id: Date.now(),
+      name: 'Travel English',
+      cards: [
+        ['itinerary', '여행 일정표'],
+        ['departure', '출발, 출발 시간'],
+        ['souvenir', '기념품']
+      ]
+    }
+  ],
+  streak: 0
+};
+
+// [추가] 브라우저에 저장된 오답 데이터를 불러오기 (없으면 빈 배열)
+let wrongAnswers = JSON.parse(localStorage.getItem(WRONG_KEY) || '[]') || [];
+
+let selected = 0;
+let studyIndex = 0;
+let flipped = false;
+let testIndex = 0;
+let testScore = 0;
+let currentWrongInfo = null;
+let showingWrongFeedback = false;
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(data));
+  renderStats();
+}
+
+// [추가] 오답 리스트를 브라우저 스토리지에 영구 저장하는 함수
+function saveWrongNotes() {
+  localStorage.setItem(WRONG_KEY, JSON.stringify(wrongAnswers));
+}
+
+function current() {
+  return data.decks[selected] || data.decks[0];
+}
+
+function renderStats() {
+  document.getElementById('totalCards').textContent = data.decks.reduce((a, d) => a + d.cards.length, 0);
+  document.getElementById('totalDecks').textContent = data.decks.length;
+  document.getElementById('todayGoal').textContent = Math.min(12, data.decks.reduce((a, d) => a + d.cards.length, 0));
+  document.getElementById('streak').textContent = '🔥 ' + data.streak + ' day streak';
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(x => x.classList.toggle('active', x.id === id));
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.screen === id));
+  
+  if (id === 'home') renderHome();
+  if (id === 'decks') renderDecks();
+  if (id === 'study') startStudy();
+  if (id === 'test') startTest();
+  if (id === 'wrong') renderWrongScreen(); // [추가] 오답노트 탭을 누를 때 화면 갱신
+}
+
+function renderHome() {
+  let el = document.getElementById('homeDecks');
+  el.innerHTML = data.decks.map((d, i) => `
+    <button class="deck" onclick="selected=${i};show('decks')">
+      <span class="count">${d.cards.length} CARDS</span>
+      <h3>${esc(d.name)}</h3>
+      <p>나만의 단어장</p>
+      <button onclick="event.stopPropagation();selected=${i};show('study')">›</button>
+    </button>
+  `).join('');
+}
+
+function renderDecks() {
+  document.getElementById('deckList').innerHTML = data.decks.map((d, i) => `
+    <button class="deck-choice ${i === selected ? 'active' : ''}" onclick="selected=${i};renderDecks()">
+      <b>${esc(d.name)}</b>
+      <small>${d.cards.length} cards</small>
+    </button>
+  `).join('');
+
+  let d = current();
+  document.getElementById('editorName').textContent = d.name;
+  document.getElementById('cardsList').innerHTML = d.cards.length ? d.cards.map((c, i) => `
+    <div class="card-item">
+      <span class="num">${String(i + 1).padStart(2, '0')}</span>
+      <b>${esc(c[0])}</b>
+      <span>→</span>
+      <span>${esc(c[1])}</span>
+      <button onclick="removeCard(${i})">×</button>
+    </div>
+  `).join('') : '<div class="empty">아직 카드가 없습니다. 위에서 첫 단어를 추가해보세요.</div>';
+}
+
+function addDeck() {
+  let n = prompt('새 단어장 이름을 적어주세요', '새로운 단어장');
+  if (!n || !n.trim()) return;
+  
+  data.decks.unshift({ id: Date.now(), name: n.trim(), cards: [] });
+  selected = 0;
+  save();
+  show('decks');
+}
+
+function deleteDeck() {
+  if (data.decks.length === 1) return alert('마지막 단어장은 삭제할 수 없습니다.');
+  if (confirm('이 단어장을 삭제할까요?')) {
+    data.decks.splice(selected, 1);
+    selected = 0;
+    save();
+    renderDecks();
+  }
+}
+
+function addCard() {
+  let t = document.getElementById('term').value.trim();
+  let m = document.getElementById('meaningInput').value.trim();
+  
+  if (!t || !m) return alert('단어와 뜻을 모두 입력해주세요.');
+  
+  current().cards.push([t, m]);
+  document.getElementById('term').value = '';
+  document.getElementById('meaningInput').value = '';
+  save();
+  renderDecks();
+}
+
+function removeCard(i) {
+  current().cards.splice(i, 1);
+  save();
+  renderDecks();
+}
+
+function startStudy() {
+  let d = current();
+  studyIndex = 0;
+  flipped = false;
+  document.getElementById('studyTitle').textContent = d.name;
+  renderStudy();
+}
+
+function renderStudy() {
+  let d = current();
+  let c = d.cards[studyIndex];
+  let area = document.getElementById('studyArea');
+  
+  document.getElementById('studyProgress').style.width = (d.cards.length ? ((studyIndex + 1) / d.cards.length * 100) : 0) + '%';
+  
+  if (!c) {
+    area.innerHTML = '<div class="empty">학습할 카드가 없습니다. 내 단어장에서 카드를 추가해주세요.</div>';
+    return;
+  }
+  
+  area.innerHTML = `
+    <div class="flashcard ${flipped ? 'flipped' : ''}" onclick="flipped=!flipped;renderStudy()">
+      <div class="inner">
+        <div class="face front">
+          <b>TERM · ${studyIndex + 1}/${d.cards.length}</b>
+          <strong>${esc(c[0])}</strong>
+          <small>카드를 눌러 뜻 보기</small>
+        </div>
+        <div class="face back">
+          <b>MEANING</b>
+          <strong>${esc(c[1])}</strong>
+          <small>카드를 눌러 다시 뒤집기</small>
+        </div>
+      </div>
+    </div>
+    <div class="study-actions">
+      <button class="memory no" onclick="nextCard(false,event)">× 아직 헷갈려요</button>
+      <button class="memory yes" onclick="nextCard(true,event)">✓ 기억했어요</button>
+    </div>
+  `;
+}
+
+function nextCard(ok, e) {
+  e.stopPropagation();
+  if (ok) data.streak = Math.max(1, data.streak + 1);
+  
+  if (studyIndex < current().cards.length - 1) {
+    studyIndex++;
+    flipped = false;
+    save();
+    renderStudy();
+  } else {
+    save();
+    alert('학습 완료! 오늘의 기억이 쌓였어요.');
+    show('home');
+  }
+}
+
+function startTest() {
+  testIndex = 0;
+  testScore = 0;
+  showingWrongFeedback = false;
+  renderTest();
+}
+
+function renderTest() {
+  let d = current();
+  let a = document.getElementById('testArea');
+  
+  if (showingWrongFeedback) {
+    a.innerHTML = `
+      <div class="test-box">
+        <div class="label" style="color:var(--coral);">❌ 오답 피드백</div>
+        <h2 style="margin:10px 0;">아쉽네요! 틀렸습니다.</h2>
+        <div class="meaning" style="border-left-color:var(--coral);">
+          <div style="font-size:14px; color:var(--muted); margin-bottom:5px;">뜻: ${esc(currentWrongInfo.meaning)}</div>
+          <div>내가 쓴 답: <span style="color:var(--coral); text-decoration:line-through;">${esc(currentWrongInfo.userAnswer)}</span></div>
+          <div style="margin-top:5px;">정답: <strong style="color:var(--blue);">${esc(currentWrongInfo.correctTerm)}</strong></div>
+        </div>
+        <button class="new-btn" style="width:100%; margin-top:15px;" onclick="proceedNextFromFeedback()">다음 문제로 →</button>
+      </div>
+    `;
+    return;
+  }
+
+  let c = d.cards[testIndex];
+  
+  if (!c) {
+    a.innerHTML = `
+      <div class="result" style="max-width:600px; margin:auto;">
+        <div class="label">TEST COMPLETE</div>
+        <h2>잘했어요<span style="color:var(--blue)">.</span></h2>
+        <p>${d.cards.length}문제 중 <b>${testScore}개</b>를 맞혔습니다.</p>
+        <p style="font-size:13px; color:var(--muted); margin-top:10px;">틀린 단어들은 <b>'오답노트' 탭</b>에 자동 저장되었습니다!</p>
+        <button class="new-btn" style="margin-top:25px;" onclick="startTest()">다시 테스트</button>
+      </div>
+    `;
+    return;
+  }
+  
+  a.innerHTML = `
+    <div class="test-box">
+      <div class="label">QUESTION ${String(testIndex + 1).padStart(2, '0')} / ${d.cards.length}</div>
+      <h2>다음 뜻에 해당하는<br><em>단어를 적어보세요.</em></h2>
+      <div class="meaning">${esc(c[1])}</div>
+      <form class="test-form" onsubmit="answerTest(event)">
+        <input id="answer" autofocus placeholder="단어를 입력하세요">
+        <button>확인 →</button>
+      </form>
+    </div>
+  `;
+}
+
+function answerTest(e) {
+  e.preventDefault();
+  let userInput = document.getElementById('answer').value.trim();
+  if (!userInput) return;
+  
+  let currentCard = current().cards[testIndex];
+  let correctTerm = currentCard[0];
+  let meaning = currentCard[1];
+
+  if (userInput.toLowerCase() === correctTerm.toLowerCase()) {
+    testScore++;
+    testIndex++;
+    renderTest();
+  } else {
+    // [수정] 틀렸을 때 오답노트 배열에 추가하고 곧바로 브라우저에 저장
+    currentWrongInfo = {
+      meaning: meaning,
+      correctTerm: correctTerm,
+      userAnswer: userInput
+    };
+    wrongAnswers.unshift(currentWrongInfo); // 최신 오답이 위로 오도록 추가
+    saveWrongNotes();
+    
+    showingWrongFeedback = true;
+    renderTest();
+  }
+}
+
+function proceedNextFromFeedback() {
+  showingWrongFeedback = false;
+  testIndex++;
+  renderTest();
+}
+
+// [추가] 오답노트 탭 화면을 그려주는 함수
+function renderWrongScreen() {
+  let wrongArea = document.getElementById('wrongArea');
+  
+  if (wrongAnswers.length === 0) {
+    wrongArea.innerHTML = `<div class="empty">아직 기록된 오답이 없습니다.<br>학습하기(테스트)에서 틀린 단어들이 자동으로 여기에 쌓입니다.</div>`;
+    return;
+  }
+
+  wrongArea.innerHTML = `
+    <div style="background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; margin-top:20px;">
+      <div class="label" style="margin-bottom:15px; color:var(--coral);">📝 누적 오답 노트 (${wrongAnswers.length}개)</div>
+      <div style="display:grid; gap:12px;">
+        ${wrongAnswers.map((w, i) => `
+          <div style="padding:15px; background:#faeee9; border-radius:9px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:11px; color:#885246; font-weight:bold; margin-bottom:4px;">오답 항목 #${i + 1}</div>
+              <div style="font-size:14px; margin-bottom:3px;"><b>뜻:</b> ${esc(w.meaning)}</div>
+              <div style="font-size:13px;">내가 쓴 답: <span style="color:#b36e5b; text-decoration:line-through;">${esc(w.userAnswer)}</span></div>
+              <div style="font-size:13px; margin-top:2px;">정답: <span style="color:var(--blue);"><b>${esc(w.correctTerm)}</b></span></div>
+            </div>
+            <button class="memory no" onclick="removeWrongItem(${i})" style="padding:8px 12px; font-size:11px;">삭제</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// [추가] 오답노트 개별 삭제 기능
+function removeWrongItem(index) {
+  wrongAnswers.splice(index, 1);
+  saveWrongNotes();
+  renderWrongScreen();
+}
+
+// [추가] 오답노트 전체 비우기 기능
+function clearWrongNotes() {
+  if (wrongAnswers.length === 0) return;
+  if (confirm('오답노트를 모두 비우시겠습니까?')) {
+    wrongAnswers = [];
+    saveWrongNotes();
+    renderWrongScreen();
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>'"]/g, x => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[x]));
+}
+
+renderStats();
+renderHome();
+</script>
+</body>
+</html>
