@@ -735,9 +735,10 @@ button {
             <div>
               <div class="label">EDITING DECK</div>
               <h2 id="editorName"></h2>
+            <div style="display:flex; gap:6px;">
+              <button class="memory" onclick="exportCurrentDeck()" style="background:#e9f0fa; color:var(--blue); border:1px solid #d0e1f9;">내보내기</button>
+              <button class="memory no" onclick="deleteDeck()">삭제</button>
             </div>
-            <button class="memory no" onclick="deleteDeck()">단어장 삭제</button>
-          </div>
           <div class="add-form">
             <input id="term" placeholder="단어 (예: serendipity)">
             <span>→</span>
@@ -755,6 +756,8 @@ button {
       <h2 id="studyTitle" style="font:600 30px Georgia,serif;margin:10px 0"></h2>
       <div class="progress"><i id="studyProgress"></i></div>
       <div id="studyArea"></div>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importDeck(event)">
+      <button class="new-btn" onclick="document.getElementById('importFile').click()" style="background:var(--green);">＋ 단어장 가져오기</button>
     </section>
 
     <!-- 4. 학습하기 화면 -->
@@ -1118,7 +1121,54 @@ function esc(s) {
     '"': '&quot;'
   }[x]));
 }
+// [기능 1] 현재 보고 있는 단어장을 JSON 파일로 다운로드 (내보내기)
+function exportCurrentDeck() {
+  let deck = current();
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(deck));
+  let downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", `${deck.name}_단어장.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
 
+// [기능 2] 다른 사람이 공유해 준 JSON 파일을 읽어서 내 단어장에 추가 (가져오기)
+function importDeck(event) {
+  let file = event.target.files[0];
+  if (!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let importedDeck = JSON.parse(e.target.result);
+      
+      // 파일 형식이 올바른지 간단 검증
+      if (!importedDeck.name || !Array.isArray(importedDeck.cards)) {
+        alert('올바른 단어장 파일 형식이 아닙니다.');
+        return;
+      }
+      
+      // 중복 ID 방지를 위해 새로운 고유 번호 부여
+      importedDeck.id = Date.now();
+      
+      // 내 단어장 목록 맨 앞에 추가
+      data.decks.unshift(importedDeck);
+      selected = 0;
+      save();
+      renderHome();
+      renderDecks();
+      
+      alert(`'${importedDeck.name}' 단어장을 성공적으로 가져왔습니다!`);
+      show('decks'); // 가져온 단어장 화면으로 바로 이동
+    } catch (err) {
+      alert('파일을 읽는 중 오류가 발생했습니다.');
+    }
+    // 같은 파일을 연속으로 다시 선택할 수 있도록 input 값 초기화
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
 renderStats();
 renderHome();
 </script>
