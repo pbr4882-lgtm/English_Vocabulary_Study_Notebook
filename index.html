@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>나만의 낱말카드</title>
+<!-- 구글 폰트에서 나눔고딕 불러오기 -->
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- 엑셀 파일 읽기를 위한 SheetJS 라이브러리 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --paper: #f7f3ea;
@@ -16,6 +20,12 @@
   --coral: #e47e69;
   --green: #6e9d79;
   --shadow: 7px 7px 0 #ded7ca;
+
+  /* 폰트 및 사이즈 통합 관리 변수 */
+  --font-family: 'Nanum Gothic', sans-serif;
+  --font-size-base: 20px;
+  --font-size-sm: 20px;
+  --font-size-lg: 25px;
 }
 
 * {
@@ -26,11 +36,13 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: Arial, 'Malgun Gothic', sans-serif;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
 }
 
 button, input {
   font: inherit;
+  font-family: var(--font-family);
 }
 
 button {
@@ -82,7 +94,7 @@ button {
 }
 
 .local {
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: .12em;
   color: #607069;
   border: 1px dashed #c9c0b1;
@@ -96,26 +108,22 @@ button {
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 36px;
-  align-items: center;
-  padding: 75px 0 50px;
+  padding: 55px 0 35px;
 }
 
 .eyebrow, .label {
-  font-size: 10px;
+  font-size: 15px;
   font-weight: bold;
   letter-spacing: .14em;
   color: #92958e;
 }
 
 .hero h1 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(38px, 6vw, 68px);
-  line-height: 1.04;
-  letter-spacing: -.07em;
-  margin: 18px 0;
+  font-size: clamp(32px, 5vw, 38px);
+  line-height: 1.25;
+  letter-spacing: -.03em;
+  margin: 14px 0;
+  font-weight: 800;
 }
 
 .hero h1 em {
@@ -126,66 +134,7 @@ button {
 .hero p {
   color: var(--muted);
   line-height: 1.7;
-  font-size: 14px;
-}
-
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 62px;
-}
-
-.action {
-  border: 1px solid var(--line);
-  background: var(--card);
-  border-radius: 11px;
-  padding: 17px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-align: left;
-  box-shadow: var(--shadow);
-  transition: .18s;
-}
-
-.action:hover {
-  transform: translateY(-3px);
-}
-
-.action.primary {
-  background: var(--blue);
-  color: white;
-  border-color: var(--blue);
-}
-
-.action .icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: #e9e3d8;
-  color: var(--blue);
-}
-
-.primary .icon {
-  background: #4a76df;
-  color: white;
-}
-
-.action span {
-  display: grid;
-  gap: 4px;
-}
-
-.action strong {
-  font-size: 14px;
-}
-
-.action small {
-  font-size: 10px;
-  opacity: .75;
+  font-size: var(--font-size-base);
 }
 
 .section {
@@ -200,10 +149,10 @@ button {
 }
 
 .section h2 {
-  font-family: Georgia, serif;
-  font-size: 27px;
-  letter-spacing: -.05em;
+  font-size: 22px;
+  letter-spacing: -.03em;
   margin: 8px 0 0;
+  font-weight: 700;
 }
 
 .stats {
@@ -241,20 +190,20 @@ button {
 .stat b {
   display: block;
   color: #8f9691;
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: .08em;
 }
 
 .stat strong {
   color: var(--ink);
-  font: 600 38px Georgia, serif;
+  font: 700 32px var(--font-family);
   display: inline-block;
   margin-top: 16px;
 }
 
 .stat span {
   color: #8c938e;
-  font-size: 12px;
+  font-size: 20px;
 }
 
 .tabs {
@@ -271,7 +220,7 @@ button {
   padding: 12px 15px;
   color: #8a928d;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 20px;
   border-bottom: 3px solid transparent;
 }
 
@@ -309,13 +258,14 @@ button {
 .deck:nth-child(3n) { border-top-color: var(--green); }
 
 .deck h3 {
-  font: 600 20px Georgia, serif;
+  font-size: 30px;
+  font-weight: 700;
   margin: 28px 0 6px;
 }
 
 .deck p {
   color: #919993;
-  font-size: 11px;
+  font-size: var(--font-size-sm);
   margin: 0;
 }
 
@@ -333,7 +283,7 @@ button {
   right: 15px;
   top: 15px;
   color: #aaa79d;
-  font-size: 9px;
+  font-size: 15px;
   font-weight: bold;
 }
 
@@ -364,12 +314,12 @@ button {
 
 .deck-choice b {
   display: block;
-  font-size: 12px;
+  font-size: 20px;
 }
 
 .deck-choice small {
   color: #999;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .editor-main {
@@ -388,8 +338,13 @@ button {
 }
 
 .editor-title h2 {
-  font: 600 27px Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
   margin: 8px 0;
+  cursor: pointer;
+}
+.editor-title h2:hover {
+  color: var(--blue);
 }
 
 .add-form {
@@ -405,7 +360,7 @@ button {
   background: #f9f6ef;
   border-radius: 7px;
   padding: 11px;
-  font-size: 12px;
+  font-size: var(--font-size-base);
 }
 
 .add-form button, .test-form button, .new-btn {
@@ -421,30 +376,31 @@ button {
   border-top: 1px solid var(--line);
 }
 
+/* 카드 아이템 그리드 구조 수정 (번호, 단어, 화살표, 앞뒤바꾸기버튼, 뜻, 삭제버튼 총 6개 칸) */
 .card-item {
   display: grid;
-  grid-template-columns: 30px 1fr 25px 1fr 25px;
-  gap: 7px;
+  grid-template-columns: 35px 1fr 25px 35px 1fr 30px;
+  gap: 6px;
   align-items: center;
   min-height: 48px;
   border-bottom: 1px solid #eee8de;
-  font-size: 12px;
+  font-size: var(--font-size-base);
 }
 
 .card-item .num {
   color: #aaa;
-  font-size: 10px;
+  font-size: 15px;
+  text-align: center;
 }
 
 .card-item button {
   border: 0;
   background: none;
-  color: #aaa;
+  cursor: pointer;
 }
 
 .study {
   text-align: center;
-  padding: 42px 0;
 }
 
 .progress {
@@ -513,14 +469,15 @@ button {
 }
 
 .face strong {
-  font: 600 clamp(35px, 6vw, 60px) Georgia, serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
 }
 
 .face small {
   position: absolute;
   bottom: 22px;
   opacity: .65;
-  font-size: 11px;
+  font-size: var(--font-size-sm);
 }
 
 .study-actions {
@@ -534,7 +491,7 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px 17px;
-  font-size: 12px;
+  font-size: var(--font-size-base);
   font-weight: bold;
 }
 
@@ -555,9 +512,10 @@ button {
 }
 
 .test-box h2 {
-  font: 600 clamp(35px, 6vw, 60px) Georgia, serif;
-  line-height: 1.08;
-  letter-spacing: -.06em;
+  font-size: clamp(28px, 5vw, 20px);
+  line-height: 1.2;
+  letter-spacing: -.03em;
+  font-weight: 700;
 }
 
 .test-box h2 em {
@@ -568,9 +526,10 @@ button {
 .meaning {
   background: var(--card);
   border-left: 4px solid #e9b455;
-  padding: 22px;
+  padding: 100px;
   margin: 25px 0;
-  font: 24px Georgia, serif;
+  font-size: 50px;
+  font-weight: 700;
 }
 
 .test-form {
@@ -580,7 +539,7 @@ button {
 
 .test-form input {
   flex: 1;
-  font-size: 14px;
+  font-size: var(--font-size-base);
 }
 
 .result {
@@ -589,7 +548,8 @@ button {
 }
 
 .result h2 {
-  font: 600 48px Georgia, serif;
+  font-size: 38px;
+  font-weight: 700;
   margin: 18px;
 }
 
@@ -601,14 +561,14 @@ button {
   padding: 35px;
   text-align: center;
   color: #9a9f99;
-  font-size: 13px;
+  font-size: var(--font-size-base);
 }
 
 .footer {
   border-top: 1px solid var(--line);
   padding-top: 18px;
   color: #aaa79f;
-  font-size: 10px;
+  font-size: 15px;
   display: flex;
   justify-content: space-between;
   margin-top: 60px;
@@ -616,15 +576,15 @@ button {
 
 @media(max-width: 720px) {
   .app { padding: 20px 16px 40px; }
-  .hero { grid-template-columns: 1fr; padding: 55px 0 35px; gap: 28px; }
-  .hero h1 { font-size: 44px; }
-  .actions, .stats, .deck-grid { grid-template-columns: 1fr; }
+  .hero { padding: 35px 0 25px; }
+  .hero h1 { font-size: 32px; }
+  .stats, .deck-grid { grid-template-columns: 1fr; }
   .editor { grid-template-columns: 1fr; }
   .deck-list { grid-template-columns: 1fr 1fr; }
   .add-form { grid-template-columns: 1fr 34px; }
   .add-form input:nth-child(3) { grid-column: 1; }
   .add-form button { grid-column: 2; grid-row: 1/3; height: 78px; }
-  .card-item { grid-template-columns: 24px 1fr 18px 1fr 18px; font-size: 11px; }
+  .card-item { grid-template-columns: 24px 1fr 18px 28px 1fr 24px; font-size: 16px; }
   .top .local { font-size: 9px; }
   .footer { display: grid; gap: 8px; }
   .test-box { margin-top: 40px; }
@@ -656,49 +616,7 @@ button {
       </div>
     </section>
 
-    <!-- 빠른 실행 버튼 영역 -->
-    <div class="actions">
-      <button class="action primary" onclick="show('study')">
-        <div class="icon">▣</div>
-        <span><strong>단어장</strong><small>카드를 넘기며 기억하기</small></span>
-        →
-      </button>
-      <button class="action" onclick="show('test')">
-        <div class="icon">✓</div>
-        <span><strong>학습하기</strong><small>내가 기억하는지 확인하기</small></span>
-        →
-      </button>
-    </div>
-
-    <!-- 진행 상황 및 통계 섹션 -->
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <div class="label">01 / YOUR PROGRESS</div>
-          <h2>이번 주의 작은 기록</h2>
-        </div>
-        <div id="streak">🔥 0 day streak</div>
-      </div>
-      <div class="stats">
-        <div class="stat blue">
-          <b>전체 카드</b>
-          <strong id="totalCards">0</strong>
-          <span> 장 · 저장된 단어</span>
-        </div>
-        <div class="stat coral">
-          <b>단어장</b>
-          <strong id="totalDecks">0</strong>
-          <span> 개 · 나만의 주제</span>
-        </div>
-        <div class="stat green">
-          <b>오늘의 목표</b>
-          <strong id="todayGoal">0</strong>
-          <span> / 20 · 카드 보기</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 탭 네비게이션 (오답노트 탭 추가) -->
+    <!-- 탭 네비게이션 -->
     <div class="tabs">
       <button class="tab active" data-screen="home" onclick="show('home')">최근 단어장</button>
       <button class="tab" data-screen="decks" onclick="show('decks')">단어장 만들기</button>
@@ -707,26 +625,59 @@ button {
       <button class="tab" data-screen="wrong" onclick="show('wrong')">오답노트</button>
     </div>
 
-    <!-- 1. 홈 화면 (최근 단어장) -->
+    <!-- 1. 홈 화면 -->
     <section id="home" class="screen active">
       <div class="section-head">
         <div>
-          <div class="label">02 / YOUR DECKS</div>
+          <div class="label">01 / YOUR DECKS</div>
           <h2>최근 단어장</h2>
         </div>
         <button class="new-btn" onclick="addDeck()">＋ 새 단어장</button>
       </div>
-      <div id="homeDecks" class="deck-grid"></div>
+      <div id="homeDecks" class="deck-grid" style="margin-bottom: 42px;"></div>
+
+      <!-- 진행 상황 및 통계 섹션 -->
+      <section class="section" style="margin-top:0;">
+        <div class="section-head">
+          <div>
+            <div class="label">06 / YOUR PROGRESS</div>
+            <h2>이번 주의 작은 기록</h2>
+          </div>
+          <div id="streak">🔥 0 day streak</div>
+        </div>
+        <div class="stats">
+          <div class="stat blue">
+            <b>전체 카드</b>
+            <strong id="totalCards">0</strong>
+            <span> 장 · 저장된 단어</span>
+          </div>
+          <div class="stat coral">
+            <b>단어장</b>
+            <strong id="totalDecks">0</strong>
+            <span> 개 · 나만의 주제</span>
+          </div>
+          <div class="stat green">
+            <b>오늘의 목표</b>
+            <strong id="todayGoal">0</strong>
+            <span> / 20 · 카드 보기</span>
+          </div>
+        </div>
+      </section>
     </section>
 
     <!-- 2. 단어장 만들기 (에디터) 화면 -->
     <section id="decks" class="screen">
       <div class="section-head">
         <div>
-          <div class="label">YOUR COLLECTION</div>
+          <div class="label">02 / YOUR COLLECTION</div>
           <h2>단어장 만들기</h2>
         </div>
-        <button class="new-btn" onclick="addDeck()">＋ 새 단어장</button>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="new-btn" onclick="addDeck()">＋ 새 단어장</button>
+          <!-- 숨겨진 파일 input과 불러오기 버튼 -->
+            <input type="file" id="importFile" style="display:none" accept=".json, .xlsx, .xls" onchange="importDeck(event)">
+            <button class="new-btn" onclick="document.getElementById('importFile').click()" style="background:var(--green);">＋ 불러오기 (JSON/엑셀)</button>
+          </div>
       </div>
       <div class="editor">
         <div id="deckList" class="deck-list"></div>
@@ -734,11 +685,13 @@ button {
           <div class="editor-title">
             <div>
               <div class="label">EDITING DECK</div>
-              <h2 id="editorName"></h2>
+              <h2 id="editorName" onclick="editDeckName()" title="클릭하여 이름 수정"></h2>
+            </div>
             <div style="display:flex; gap:6px;">
               <button class="memory" onclick="exportCurrentDeck()" style="background:#e9f0fa; color:var(--blue); border:1px solid #d0e1f9;">내보내기</button>
               <button class="memory no" onclick="deleteDeck()">삭제</button>
             </div>
+          </div>
           <div class="add-form">
             <input id="term" placeholder="단어 (예: serendipity)">
             <span>→</span>
@@ -751,25 +704,44 @@ button {
     </section>
 
     <!-- 3. 단어장 화면 -->
-    <section id="study" class="screen study">
-      <div class="label">03 / STUDY SESSION</div>
-      <h2 id="studyTitle" style="font:600 30px Georgia,serif;margin:10px 0"></h2>
-      <div class="progress"><i id="studyProgress"></i></div>
-      <div id="studyArea"></div>
-      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importDeck(event)">
-      <button class="new-btn" onclick="document.getElementById('importFile').click()" style="background:var(--green);">＋ 단어장 가져오기</button>
+    <section id="study" class="screen">
+      <div class="section-head">
+        <div>
+          <div class="label">03 / STUDY SESSION</div>
+          <h2>단어장 학습</h2>
+        </div>
+      </div>
+      <div class="editor">
+        <div id="studyDeckList" class="deck-list"></div>
+        <div class="editor-main study">
+          <h2 id="studyTitle" style="font-size:24px; margin:0 0 10px; font-weight:700;"></h2>
+          <div class="progress"><i id="studyProgress"></i></div>
+          <div id="studyArea"></div>
+        </div>
+      </div>
     </section>
 
     <!-- 4. 학습하기 화면 -->
-    <section id="test" class="screen">
-      <div id="testArea"></div>
-    </section>
+        <section id="test" class="screen">
+          <div class="section-head">
+            <div>
+              <div class="label">04 / TEST SESSION</div>
+              <h2>단어장 테스트</h2>
+            </div>
+          </div>
+          <div class="editor">
+            <div id="testDeckList" class="deck-list"></div>
+            <div class="editor-main" style="text-align: center;">
+              <div id="testArea"></div>
+            </div>
+          </div>
+        </section>
 
-    <!-- 5. 오답노트 화면 섹션 추가 -->
+    <!-- 5. 오답노트 화면 섹션 -->
     <section id="wrong" class="screen">
       <div class="section-head">
         <div>
-          <div class="label">MISTAKE NOTEBOOK</div>
+          <div class="label">05 / MISTAKE NOTEBOOK</div>
           <h2>오답 노트</h2>
         </div>
         <button class="memory no" onclick="clearWrongNotes()">오답노트 모두 비우기</button>
@@ -787,7 +759,7 @@ button {
 
 <script>
 const KEY = 'simple-vocab-v1';
-const WRONG_KEY = 'simple-vocab-wrong-v1'; // [추가] 오답노트 전용 저장 키
+const WRONG_KEY = 'simple-vocab-wrong-v1';
 
 let data = JSON.parse(localStorage.getItem(KEY) || 'null') || {
   decks: [
@@ -804,7 +776,6 @@ let data = JSON.parse(localStorage.getItem(KEY) || 'null') || {
   streak: 0
 };
 
-// [추가] 브라우저에 저장된 오답 데이터를 불러오기 (없으면 빈 배열)
 let wrongAnswers = JSON.parse(localStorage.getItem(WRONG_KEY) || '[]') || [];
 
 let selected = 0;
@@ -820,7 +791,6 @@ function save() {
   renderStats();
 }
 
-// [추가] 오답 리스트를 브라우저 스토리지에 영구 저장하는 함수
 function saveWrongNotes() {
   localStorage.setItem(WRONG_KEY, JSON.stringify(wrongAnswers));
 }
@@ -844,7 +814,7 @@ function show(id) {
   if (id === 'decks') renderDecks();
   if (id === 'study') startStudy();
   if (id === 'test') startTest();
-  if (id === 'wrong') renderWrongScreen(); // [추가] 오답노트 탭을 누를 때 화면 갱신
+  if (id === 'wrong') renderWrongScreen();
 }
 
 function renderHome() {
@@ -857,6 +827,19 @@ function renderHome() {
       <button onclick="event.stopPropagation();selected=${i};show('study')">›</button>
     </button>
   `).join('');
+}
+
+function swapCard(cardIndex) {
+  const deck = data.decks[selected];
+  if (!deck || !deck.cards[cardIndex]) return;
+  
+  const card = deck.cards[cardIndex];
+  const temp = card[0]; 
+  card[0] = card[1];
+  card[1] = temp;
+  
+  save();         
+  renderDecks();   
 }
 
 function renderDecks() {
@@ -874,10 +857,20 @@ function renderDecks() {
       <span class="num">${String(i + 1).padStart(2, '0')}</span>
       <b>${esc(c[0])}</b>
       <span>→</span>
+      <button type="button" onclick="swapCard(${i})" title="앞뒤 바꾸기">🔄</button>
       <span>${esc(c[1])}</span>
-      <button onclick="removeCard(${i})">×</button>
+      <button onclick="removeCard(${i})" title="삭제">×</button>     
     </div>
   `).join('') : '<div class="empty">아직 카드가 없습니다. 위에서 첫 단어를 추가해보세요.</div>';
+}
+
+function editDeckName() {
+  let d = current();
+  let newName = prompt('단어장 이름을 수정해주세요:', d.name);
+  if (!newName || !newName.trim()) return;
+  d.name = newName.trim();
+  save();
+  renderDecks();
 }
 
 function addDeck() {
@@ -920,11 +913,19 @@ function removeCard(i) {
 }
 
 function startStudy() {
-  let d = current();
   studyIndex = 0;
   flipped = false;
-  document.getElementById('studyTitle').textContent = d.name;
+  renderStudyDecks();
   renderStudy();
+}
+
+function renderStudyDecks() {
+  document.getElementById('studyDeckList').innerHTML = data.decks.map((d, i) => `
+    <button class="deck-choice ${i === selected ? 'active' : ''}" onclick="selected=${i};studyIndex=0;flipped=false;renderStudyDecks();renderStudy()">
+      <b>${esc(d.name)}</b>
+      <small>${d.cards.length} cards</small>
+    </button>
+  `).join('');
 }
 
 function renderStudy() {
@@ -932,6 +933,7 @@ function renderStudy() {
   let c = d.cards[studyIndex];
   let area = document.getElementById('studyArea');
   
+  document.getElementById('studyTitle').textContent = d.name;
   document.getElementById('studyProgress').style.width = (d.cards.length ? ((studyIndex + 1) / d.cards.length * 100) : 0) + '%';
   
   if (!c) {
@@ -981,7 +983,19 @@ function startTest() {
   testIndex = 0;
   testScore = 0;
   showingWrongFeedback = false;
+  renderTestDecks();
   renderTest();
+}
+
+function renderTestDecks() {
+  let el = document.getElementById('testDeckList');
+  if (!el) return;
+  el.innerHTML = data.decks.map((d, i) => `
+    <button class="deck-choice ${i === selected ? 'active' : ''}" onclick="selected=${i};startTest()">
+      <b>${esc(d.name)}</b>
+      <small>${d.cards.length} cards</small>
+    </button>
+  `).join('');
 }
 
 function renderTest() {
@@ -1012,7 +1026,7 @@ function renderTest() {
         <div class="label">TEST COMPLETE</div>
         <h2>잘했어요<span style="color:var(--blue)">.</span></h2>
         <p>${d.cards.length}문제 중 <b>${testScore}개</b>를 맞혔습니다.</p>
-        <p style="font-size:13px; color:var(--muted); margin-top:10px;">틀린 단어들은 <b>'오답노트' 탭</b>에 자동 저장되었습니다!</p>
+        <p style="font-size:15px; color:var(--muted); margin-top:10px;">틀린 단어들은 <b>'오답노트' 탭</b>에 자동 저장되었습니다!</p>
         <button class="new-btn" style="margin-top:25px;" onclick="startTest()">다시 테스트</button>
       </div>
     `;
@@ -1021,7 +1035,7 @@ function renderTest() {
   
   a.innerHTML = `
     <div class="test-box">
-      <div class="label">QUESTION ${String(testIndex + 1).padStart(2, '0')} / ${d.cards.length}</div>
+      <div class="label">04 / QUESTION ${String(testIndex + 1).padStart(2, '0')} / ${d.cards.length}</div>
       <h2>다음 뜻에 해당하는<br><em>단어를 적어보세요.</em></h2>
       <div class="meaning">${esc(c[1])}</div>
       <form class="test-form" onsubmit="answerTest(event)">
@@ -1046,13 +1060,12 @@ function answerTest(e) {
     testIndex++;
     renderTest();
   } else {
-    // [수정] 틀렸을 때 오답노트 배열에 추가하고 곧바로 브라우저에 저장
     currentWrongInfo = {
       meaning: meaning,
       correctTerm: correctTerm,
       userAnswer: userInput
     };
-    wrongAnswers.unshift(currentWrongInfo); // 최신 오답이 위로 오도록 추가
+    wrongAnswers.unshift(currentWrongInfo);
     saveWrongNotes();
     
     showingWrongFeedback = true;
@@ -1066,7 +1079,6 @@ function proceedNextFromFeedback() {
   renderTest();
 }
 
-// [추가] 오답노트 탭 화면을 그려주는 함수
 function renderWrongScreen() {
   let wrongArea = document.getElementById('wrongArea');
   
@@ -1082,12 +1094,12 @@ function renderWrongScreen() {
         ${wrongAnswers.map((w, i) => `
           <div style="padding:15px; background:#faeee9; border-radius:9px; display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <div style="font-size:11px; color:#885246; font-weight:bold; margin-bottom:4px;">오답 항목 #${i + 1}</div>
-              <div style="font-size:14px; margin-bottom:3px;"><b>뜻:</b> ${esc(w.meaning)}</div>
-              <div style="font-size:13px;">내가 쓴 답: <span style="color:#b36e5b; text-decoration:line-through;">${esc(w.userAnswer)}</span></div>
-              <div style="font-size:13px; margin-top:2px;">정답: <span style="color:var(--blue);"><b>${esc(w.correctTerm)}</b></span></div>
+              <div style="font-size:20px; color:#885246; font-weight:bold; margin-bottom:4px;">오답 항목 #${i + 1}</div>
+              <div style="font-size:20px; margin-bottom:3px;"><b>뜻:</b> ${esc(w.meaning)}</div>
+              <div style="font-size:20px;">내가 쓴 답: <span style="color:#b36e5b; text-decoration:line-through;">${esc(w.userAnswer)}</span></div>
+              <div style="font-size:20px; margin-top:2px;">정답: <span style="color:var(--blue);"><b>${esc(w.correctTerm)}</b></span></div>
             </div>
-            <button class="memory no" onclick="removeWrongItem(${i})" style="padding:8px 12px; font-size:11px;">삭제</button>
+            <button class="memory no" onclick="removeWrongItem(${i})" style="padding:8px 12px; font-size:20px;">삭제</button>
           </div>
         `).join('')}
       </div>
@@ -1095,14 +1107,12 @@ function renderWrongScreen() {
   `;
 }
 
-// [추가] 오답노트 개별 삭제 기능
 function removeWrongItem(index) {
   wrongAnswers.splice(index, 1);
   saveWrongNotes();
   renderWrongScreen();
 }
 
-// [추가] 오답노트 전체 비우기 기능
 function clearWrongNotes() {
   if (wrongAnswers.length === 0) return;
   if (confirm('오답노트를 모두 비우시겠습니까?')) {
@@ -1121,7 +1131,7 @@ function esc(s) {
     '"': '&quot;'
   }[x]));
 }
-// [기능 1] 현재 보고 있는 단어장을 JSON 파일로 다운로드 (내보내기)
+
 function exportCurrentDeck() {
   let deck = current();
   let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(deck));
@@ -1133,42 +1143,84 @@ function exportCurrentDeck() {
   downloadAnchor.remove();
 }
 
-// [기능 2] 다른 사람이 공유해 준 JSON 파일을 읽어서 내 단어장에 추가 (가져오기)
 function importDeck(event) {
   let file = event.target.files[0];
   if (!file) return;
 
-  let reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      let importedDeck = JSON.parse(e.target.result);
-      
-      // 파일 형식이 올바른지 간단 검증
-      if (!importedDeck.name || !Array.isArray(importedDeck.cards)) {
-        alert('올바른 단어장 파일 형식이 아닙니다.');
-        return;
+  let fileName = file.name.toLowerCase();
+
+  if (fileName.endsWith('.json')) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        let importedDeck = JSON.parse(e.target.result);
+        if (!importedDeck.name || !Array.isArray(importedDeck.cards)) {
+          alert('올바른 단어장 파일 형식이 아닙니다.');
+          return;
+        }
+        importedDeck.id = Date.now();
+        data.decks.unshift(importedDeck);
+        selected = 0;
+        save();
+        renderHome();
+        renderDecks();
+        alert(`'${importedDeck.name}' 단어장을 성공적으로 가져왔습니다!`);
+        show('decks');
+      } catch (err) {
+        alert('파일을 읽는 중 오류가 발생했습니다.');
       }
-      
-      // 중복 ID 방지를 위해 새로운 고유 번호 부여
-      importedDeck.id = Date.now();
-      
-      // 내 단어장 목록 맨 앞에 추가
-      data.decks.unshift(importedDeck);
-      selected = 0;
-      save();
-      renderHome();
-      renderDecks();
-      
-      alert(`'${importedDeck.name}' 단어장을 성공적으로 가져왔습니다!`);
-      show('decks'); // 가져온 단어장 화면으로 바로 이동
-    } catch (err) {
-      alert('파일을 읽는 중 오류가 발생했습니다.');
-    }
-    // 같은 파일을 연속으로 다시 선택할 수 있도록 input 값 초기화
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        let dataArr = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(dataArr, { type: 'array' });
+        let firstSheetName = workbook.SheetNames[0];
+        let worksheet = workbook.Sheets[firstSheetName];
+        let jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        let cards = [];
+        for (let row of jsonRows) {
+          if (row[0] && row[1]) {
+            cards.push([String(row[0]).trim(), String(row[1]).trim()]);
+          }
+        }
+
+        if (cards.length === 0) {
+          alert('엑셀 파일에서 유효한 단어 데이터를 찾지 못했습니다. (1열: 단어, 2열: 뜻 형식이어야 합니다)');
+          event.target.value = '';
+          return;
+        }
+
+        let deckName = file.name.substring(0, file.name.lastIndexOf('.')) || '엑셀 단어장';
+        let importedDeck = {
+          id: Date.now(),
+          name: deckName,
+          cards: cards
+        };
+
+        data.decks.unshift(importedDeck);
+        selected = 0;
+        save();
+        renderHome();
+        renderDecks();
+        alert(`'${importedDeck.name}' 엑셀 단어장을 성공적으로 가져왔습니다!`);
+        show('decks');
+      } catch (err) {
+        alert('엑셀 파일을 읽는 중 오류가 발생했습니다.');
+      }
+      event.target.value = '';
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    alert('지원하지 않는 파일 형식입니다. (.json, .xlsx, .xls 파일만 가능)');
     event.target.value = '';
-  };
-  reader.readAsText(file);
+  }
 }
+
 renderStats();
 renderHome();
 </script>
